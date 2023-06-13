@@ -16,8 +16,10 @@ website:
         menu: 
           - text: "01 Tidyverse"
             file: content/01_journal/01_tidyverse.qmd
-          - text: "Chapter 1 Challenge"
+          - text: "Challenge 2"
             file: content/01_journal/Chapter_1_Challenge.qmd
+          - text: "Challenge 2"
+            file: content/01_journal/Challenge_2.qmd
 
 format:
   html:

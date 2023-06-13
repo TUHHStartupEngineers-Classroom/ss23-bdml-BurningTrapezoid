@@ -1,0 +1,88 @@
+---
+title: "Challenge 2: Regression"
+author: "Andreas Jessen"
+---
+
+# Load packages:
+```{r}
+# Standard
+library(tidyverse)
+
+# Modeling
+library(parsnip)
+
+# Preprocessing & Sampling
+library(recipes)
+library(rsample)
+
+# Modeling Error Metrics
+library(yardstick)
+
+# Plotting Decision Trees
+library(rpart.plot)
+
+library(workflows)
+```
+
+# Data preparation:
+```{r}
+# Modeling ----------------------------------------------------------------
+bike_features_tbl <- readRDS("Data/bike_features_tbl.rds")
+
+bike_features_tbl <- bike_features_tbl %>%
+  select(price, model, category_2, frame_material) 
+```
+
+# Split data
+```{r}
+# run both following commands at the same time
+set.seed(seed = 1113)
+split_obj <- rsample::initial_split(bike_features_tbl, prop   = 0.80, 
+                                                       strata = "category_2")
+
+# Assign training and test data
+train_tbl <- training(split_obj)
+test_tbl  <- testing(split_obj)
+
+# We have to remove spaces and dashes from the column names
+train_tbl <- train_tbl %>% set_names(str_replace_all(names(train_tbl), " |-", "_"))
+test_tbl  <- test_tbl  %>% set_names(str_replace_all(names(test_tbl),  " |-", "_"))
+```
+
+# Model
+
+```{r}
+model_reg_lm <- linear_reg(mode = "regression") %>% set_engine("lm")
+```
+
+# Recipe
+```{r}
+recipe_obj <- recipe(price ~ ., data = bike_features_tbl) %>% 
+  update_role(model, new_role = "ID") %>%
+  step_dummy(all_nominal(), -model, - all_outcomes(), one_hot = T) %>%
+  prep()
+```
+
+# Workflow
+```{r}
+workflow_obj <- workflow() %>% 
+  add_model(model_reg_lm) %>% 
+  add_recipe(recipe_obj)
+
+fitted_workflow <- fit(workflow_obj, train_tbl)
+```
+
+# Evaluate model with yardstick
+```{r}
+calc_metrics <- function(model, new_data = test_tbl) {
+
+    model %>%
+        predict(new_data = new_data) %>%
+
+        bind_cols(new_data %>% select(price)) %>%
+        yardstick::metrics(truth = price, estimate = .pred)
+
+}
+
+fitted_workflow %>% calc_metrics(test_tbl)
+```
