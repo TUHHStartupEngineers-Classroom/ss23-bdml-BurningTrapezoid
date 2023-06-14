@@ -1,5 +1,5 @@
 ---
-title: "Challenge 3: Automated ML"
+title: "Challenge 3: AutoML"
 author: "Andreas Jessen"
 ---
 # First part
