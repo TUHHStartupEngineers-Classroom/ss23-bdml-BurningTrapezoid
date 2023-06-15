@@ -121,10 +121,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-journal">
 <li>
-    <a class="dropdown-item" href="../../content/01_journal/01_tidyverse.html" rel="" target="">
- <span class="dropdown-text">01 Tidyverse</span></a>
-  </li>  
-        <li>
     <a class="dropdown-item" href="../../content/01_journal/Chapter_1_Challenge.html" rel="" target="">
  <span class="dropdown-text">Challenge 1: Fundamentals</span></a>
   </li>  
@@ -143,6 +139,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../../content/01_journal/Challenge_5.html" rel="" target="">
  <span class="dropdown-text">Challenge 5: Lime</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../content/01_journal/Challenge_6.html" rel="" target="">
+ <span class="dropdown-text">Challenge 6: Deep Learning</span></a>
   </li>  
     </ul>
 </li>
@@ -480,17 +480,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div class="cell" data-hash="Challenge_5_cache/html/unnamed-chunk-9_71e4146b8848989e2299b9ecc81fd821">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>explanation <span class="ot">&lt;-</span> test_tbl <span class="sc">%&gt;%</span></span>
-<span id="cb24-2"><a href="#cb24-2"></a>    <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb24-3"><a href="#cb24-3"></a>    <span class="fu">select</span>(<span class="sc">-</span>Attrition) <span class="sc">%&gt;%</span></span>
-<span id="cb24-4"><a href="#cb24-4"></a>    lime<span class="sc">::</span><span class="fu">explain</span>(</span>
-<span id="cb24-5"><a href="#cb24-5"></a>        <span class="at">explainer =</span> explainer,</span>
-<span id="cb24-6"><a href="#cb24-6"></a>        <span class="at">n_labels   =</span> <span class="dv">1</span>,</span>
-<span id="cb24-7"><a href="#cb24-7"></a>        <span class="at">n_features =</span> <span class="dv">8</span>,</span>
-<span id="cb24-8"><a href="#cb24-8"></a>        <span class="at">n_permutations =</span> <span class="dv">5000</span>,</span>
-<span id="cb24-9"><a href="#cb24-9"></a>        <span class="at">kernel_width   =</span> <span class="fl">0.5</span></span>
-<span id="cb24-10"><a href="#cb24-10"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="Challenge_5_cache/html/unnamed-chunk-9_effa5985083189bf77da1664e3b76913">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">h2o.init</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;  Connection successful!
+#&gt; 
+#&gt; R is connected to the H2O cluster: 
+#&gt;     H2O cluster uptime:         1 days 22 hours 
+#&gt;     H2O cluster timezone:       Europe/Berlin 
+#&gt;     H2O data parsing timezone:  UTC 
+#&gt;     H2O cluster version:        3.40.0.4 
+#&gt;     H2O cluster version age:    1 month and 18 days 
+#&gt;     H2O cluster name:           H2O_started_from_R_andi_gcu544 
+#&gt;     H2O cluster total nodes:    1 
+#&gt;     H2O cluster total memory:   2.59 GB 
+#&gt;     H2O cluster total cores:    4 
+#&gt;     H2O cluster allowed cores:  4 
+#&gt;     H2O cluster healthy:        TRUE 
+#&gt;     H2O Connection ip:          localhost 
+#&gt;     H2O Connection port:        54321 
+#&gt;     H2O Connection proxy:       NA 
+#&gt;     H2O Internal Security:      FALSE 
+#&gt;     R Version:                  R version 4.3.0 (2023-04-21)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>explanation <span class="ot">&lt;-</span> test_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a>    <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-3"><a href="#cb26-3"></a>    <span class="fu">select</span>(<span class="sc">-</span>Attrition) <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a>    lime<span class="sc">::</span><span class="fu">explain</span>(</span>
+<span id="cb26-5"><a href="#cb26-5"></a>        <span class="at">explainer =</span> explainer,</span>
+<span id="cb26-6"><a href="#cb26-6"></a>        <span class="at">n_labels   =</span> <span class="dv">1</span>,</span>
+<span id="cb26-7"><a href="#cb26-7"></a>        <span class="at">n_features =</span> <span class="dv">8</span>,</span>
+<span id="cb26-8"><a href="#cb26-8"></a>        <span class="at">n_permutations =</span> <span class="dv">5000</span>,</span>
+<span id="cb26-9"><a href="#cb26-9"></a>        <span class="at">kernel_width   =</span> <span class="fl">0.5</span></span>
+<span id="cb26-10"><a href="#cb26-10"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; 
   |                                                                            
@@ -503,32 +525,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   |                                                                            
   |======================================================================| 100%</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>my_plot_explanation <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb26-2"><a href="#cb26-2"></a>  g <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
-<span id="cb26-3"><a href="#cb26-3"></a>    <span class="fu">ggplot</span>(<span class="fu">aes_</span>(<span class="sc">~</span>case, <span class="sc">~</span>feature_desc)) <span class="sc">+</span></span>
-<span id="cb26-4"><a href="#cb26-4"></a>    <span class="fu">geom_tile</span>(<span class="fu">aes_</span>(<span class="at">fill =</span> <span class="sc">~</span>feature_weight)) <span class="sc">+</span></span>
-<span id="cb26-5"><a href="#cb26-5"></a>    <span class="fu">scale_x_discrete</span>(<span class="st">'Case'</span>, <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
-<span id="cb26-6"><a href="#cb26-6"></a>    <span class="fu">scale_y_discrete</span>(<span class="st">'Feature'</span>, <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
-<span id="cb26-7"><a href="#cb26-7"></a>    <span class="fu">scale_fill_gradient2</span>(<span class="st">'Feature</span><span class="sc">\n</span><span class="st">weight'</span>, <span class="at">low =</span> <span class="st">'firebrick'</span>, <span class="at">mid =</span> <span class="st">'#f7f7f7'</span>, <span class="at">high =</span> <span class="st">'steelblue'</span>) <span class="sc">+</span></span>
-<span id="cb26-8"><a href="#cb26-8"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb26-9"><a href="#cb26-9"></a>    <span class="fu">theme</span>(<span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="cn">NA</span>, <span class="at">colour =</span> <span class="st">'grey60'</span>, <span class="at">size =</span> <span class="dv">1</span>),</span>
-<span id="cb26-10"><a href="#cb26-10"></a>          <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb26-11"><a href="#cb26-11"></a>          <span class="at">legend.position =</span> <span class="st">'right'</span>,</span>
-<span id="cb26-12"><a href="#cb26-12"></a>          <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="dv">1</span>))</span>
-<span id="cb26-13"><a href="#cb26-13"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(explanation<span class="sc">$</span>label)) {</span>
-<span id="cb26-14"><a href="#cb26-14"></a>    g</span>
-<span id="cb26-15"><a href="#cb26-15"></a>  } <span class="cf">else</span> {</span>
-<span id="cb26-16"><a href="#cb26-16"></a>    g <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>label)</span>
-<span id="cb26-17"><a href="#cb26-17"></a>  }</span>
-<span id="cb26-18"><a href="#cb26-18"></a>}</span>
-<span id="cb26-19"><a href="#cb26-19"></a><span class="fu">my_plot_explanation</span>(explanation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>my_plot_explanation <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb28-2"><a href="#cb28-2"></a>  g <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb28-3"><a href="#cb28-3"></a>    <span class="fu">ggplot</span>(<span class="fu">aes_</span>(<span class="sc">~</span>case, <span class="sc">~</span>feature_desc)) <span class="sc">+</span></span>
+<span id="cb28-4"><a href="#cb28-4"></a>    <span class="fu">geom_tile</span>(<span class="fu">aes_</span>(<span class="at">fill =</span> <span class="sc">~</span>feature_weight)) <span class="sc">+</span></span>
+<span id="cb28-5"><a href="#cb28-5"></a>    <span class="fu">scale_x_discrete</span>(<span class="st">'Case'</span>, <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb28-6"><a href="#cb28-6"></a>    <span class="fu">scale_y_discrete</span>(<span class="st">'Feature'</span>, <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb28-7"><a href="#cb28-7"></a>    <span class="fu">scale_fill_gradient2</span>(<span class="st">'Feature</span><span class="sc">\n</span><span class="st">weight'</span>, <span class="at">low =</span> <span class="st">'firebrick'</span>, <span class="at">mid =</span> <span class="st">'#f7f7f7'</span>, <span class="at">high =</span> <span class="st">'steelblue'</span>) <span class="sc">+</span></span>
+<span id="cb28-8"><a href="#cb28-8"></a>    <span class="fu">theme_minimal</span>()</span>
+<span id="cb28-9"><a href="#cb28-9"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(explanation<span class="sc">$</span>label)) {</span>
+<span id="cb28-10"><a href="#cb28-10"></a>    g</span>
+<span id="cb28-11"><a href="#cb28-11"></a>  } <span class="cf">else</span> {</span>
+<span id="cb28-12"><a href="#cb28-12"></a>    g <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>label)</span>
+<span id="cb28-13"><a href="#cb28-13"></a>  }</span>
+<span id="cb28-14"><a href="#cb28-14"></a>}</span>
+<span id="cb28-15"><a href="#cb28-15"></a><span class="fu">my_plot_explanation</span>(explanation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>#&gt; Warning: `aes_()` was deprecated in ggplot2 3.0.0.
 #&gt; ℹ Please use tidy evaluation idioms with `aes()`</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>#&gt; Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
-#&gt; ℹ Please use the `linewidth` argument instead.</code></pre>
 </div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -889,7 +903,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","selector":".lightbox","openEffect":"zoom","descPosition":"bottom","loop":true});</script>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","openEffect":"zoom","selector":".lightbox","loop":true,"descPosition":"bottom"});</script>
 
 
 </body></html>
