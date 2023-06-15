@@ -24,6 +24,8 @@ website:
             file: content/01_journal/Challenge_3.qmd
           - text: "Challenge 4: Performance"
             file: content/01_journal/Challenge_4.qmd
+          - text: "Challenge 5: Lime"
+            file: content/01_journal/Challenge_5.qmd
 
 format:
   html:
