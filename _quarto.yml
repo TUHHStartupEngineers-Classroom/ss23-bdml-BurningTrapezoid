@@ -26,6 +26,8 @@ website:
             file: content/01_journal/Challenge_4.qmd
           - text: "Challenge 5: Lime"
             file: content/01_journal/Challenge_5.qmd
+          - text: "Challenge 6: Deep Learning"
+            file: content/01_journal/Challenge_6.qmd
 
 format:
   html:

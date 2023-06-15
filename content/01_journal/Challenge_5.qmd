@@ -186,6 +186,7 @@ my_plot_features(case_1)
 ```
 
 ```{r}
+h2o.init()
 explanation <- test_tbl %>%
     slice(1:20) %>%
     select(-Attrition) %>%
@@ -204,11 +205,7 @@ my_plot_explanation <- function(data) {
     scale_x_discrete('Case', expand = c(0, 0)) +
     scale_y_discrete('Feature', expand = c(0, 0)) +
     scale_fill_gradient2('Feature\nweight', low = 'firebrick', mid = '#f7f7f7', high = 'steelblue') +
-    theme_minimal() +
-    theme(panel.border = element_rect(fill = NA, colour = 'grey60', size = 1),
-          panel.grid = element_blank(),
-          legend.position = 'right',
-          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+    theme_minimal()
   if (is.null(explanation$label)) {
     g
   } else {
