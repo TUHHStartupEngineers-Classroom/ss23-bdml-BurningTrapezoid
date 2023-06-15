@@ -14,8 +14,6 @@ website:
         text: Home
       - text: "Journal"
         menu: 
-          - text: "01 Tidyverse"
-            file: content/01_journal/01_tidyverse.qmd
           - text: "Challenge 1: Fundamentals"
             file: content/01_journal/Chapter_1_Challenge.qmd
           - text: "Challenge 2: Regression"

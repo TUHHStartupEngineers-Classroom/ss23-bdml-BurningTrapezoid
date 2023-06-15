@@ -105,20 +105,6 @@
     "text": "1 Load packages:\n\n# Standard\nlibrary(tidyverse)\n\n#&gt; ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n#&gt; ✔ dplyr     1.1.2     ✔ readr     2.1.4\n#&gt; ✔ forcats   1.0.0     ✔ stringr   1.5.0\n#&gt; ✔ ggplot2   3.4.2     ✔ tibble    3.2.1\n#&gt; ✔ lubridate 1.9.2     ✔ tidyr     1.3.0\n#&gt; ✔ purrr     1.0.1     \n#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n#&gt; ✖ dplyr::filter() masks stats::filter()\n#&gt; ✖ dplyr::lag()    masks stats::lag()\n#&gt; ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n# Modeling\nlibrary(parsnip)\n\n# Preprocessing & Sampling\nlibrary(recipes)\n\n#&gt; \n#&gt; Attache Paket: 'recipes'\n#&gt; \n#&gt; Das folgende Objekt ist maskiert 'package:stringr':\n#&gt; \n#&gt;     fixed\n#&gt; \n#&gt; Das folgende Objekt ist maskiert 'package:stats':\n#&gt; \n#&gt;     step\n\nlibrary(rsample)\n\n# Modeling Error Metrics\nlibrary(yardstick)\n\n#&gt; \n#&gt; Attache Paket: 'yardstick'\n#&gt; \n#&gt; Das folgende Objekt ist maskiert 'package:readr':\n#&gt; \n#&gt;     spec\n\n# Plotting Decision Trees\nlibrary(rpart.plot)\n\n#&gt; Lade nötiges Paket: rpart\n\nlibrary(workflows)\n\n\n2 Data preparation:\n\n# Modeling ----------------------------------------------------------------\nbike_features_tbl &lt;- readRDS(\"Data/bike_features_tbl.rds\")\n\nbike_features_tbl &lt;- bike_features_tbl %&gt;%\n  select(price, model, category_2, frame_material) \n\n\n3 Split data\n\n# run both following commands at the same time\nset.seed(seed = 1113)\nsplit_obj &lt;- rsample::initial_split(bike_features_tbl, prop   = 0.80, \n                                                       strata = \"category_2\")\n\n# Assign training and test data\ntrain_tbl &lt;- training(split_obj)\ntest_tbl  &lt;- testing(split_obj)\n\n# We have to remove spaces and dashes from the column names\ntrain_tbl &lt;- train_tbl %&gt;% set_names(str_replace_all(names(train_tbl), \" |-\", \"_\"))\ntest_tbl  &lt;- test_tbl  %&gt;% set_names(str_replace_all(names(test_tbl),  \" |-\", \"_\"))\n\n\n4 Model\n\nmodel_reg_lm &lt;- linear_reg(mode = \"regression\") %&gt;% set_engine(\"lm\")\n\n\n5 Recipe\n\nrecipe_obj &lt;- recipe(price ~ ., data = bike_features_tbl) %&gt;% \n  update_role(model, new_role = \"ID\") %&gt;%\n  step_dummy(all_nominal(), -model, - all_outcomes(), one_hot = T) %&gt;%\n  prep()\n\n\n6 Workflow\n\nworkflow_obj &lt;- workflow() %&gt;% \n  add_model(model_reg_lm) %&gt;% \n  add_recipe(recipe_obj)\n\nfitted_workflow &lt;- fit(workflow_obj, train_tbl)\n\n\n7 Evaluate model with yardstick\n\ncalc_metrics &lt;- function(model, new_data = test_tbl) {\n\n    model %&gt;%\n        predict(new_data = new_data) %&gt;%\n\n        bind_cols(new_data %&gt;% select(price)) %&gt;%\n        yardstick::metrics(truth = price, estimate = .pred)\n\n}\n\nfitted_workflow %&gt;% calc_metrics(test_tbl)\n\n#&gt; Warning: There are new levels in a factor: E-Road"
   },
   {
-    "objectID": "content/01_journal/01_tidyverse.html",
-    "href": "content/01_journal/01_tidyverse.html",
-    "title": "Tidyverse",
-    "section": "",
-    "text": "Note\n\n\n\nYou can delete everything in here and start fresh.\nThis is a .qmd file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a # in front of your text, it will create a top level-header.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
-  },
-  {
-    "objectID": "content/01_journal/01_tidyverse.html#header-2",
-    "href": "content/01_journal/01_tidyverse.html#header-2",
-    "title": "Tidyverse",
-    "section": "\n2.1 Header 2",
-    "text": "2.1 Header 2\nHeader 3\nHeader 4\nHeader 5\nHeader 6"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "My Lab Journal",
