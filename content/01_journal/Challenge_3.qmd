@@ -1,0 +1,184 @@
+---
+title: "Challenge 3: AutoML"
+author: "Andreas Jessen"
+---
+# First part
+## Libraries
+```{r}
+#| message: false
+library(tidyverse)
+library(readxl)
+library(skimr)
+library(GGally)
+library(rsample)
+library(recipes)
+library(h2o)
+```
+
+```{r}
+# Load data
+employee_attrition_tbl <- read_csv("Data/datasets-1067-1925-WA_Fn-UseC_-HR-Employee-Attrition.csv")
+```
+## Create plot_ggpairs function
+```{r}
+plot_ggpairs <- function(data, color = NULL, density_alpha = 0.5) {
+    
+    color_expr <- enquo(color)
+    
+    if (rlang::quo_is_null(color_expr)) {
+        
+        g <- data %>%
+            ggpairs(lower = "blank") 
+        
+    } else {
+        
+        color_name <- quo_name(color_expr)
+        
+        g <- data %>%
+            ggpairs(mapping = aes_string(color = color_name), 
+                    lower = "blank", legend = 1,
+                    diag = list(continuous = wrap("densityDiag", 
+                                                  alpha = density_alpha))) +
+            theme(legend.position = "bottom")
+    }
+    
+    return(g)
+    
+}
+```
+
+## Plots and analysis
+```{r}
+#| message: false
+# Compensation features: HourlyRate, MonthlyIncome, StockOptionLevel 
+employee_attrition_tbl %>%
+    select(Attrition, contains("income"), contains("rate"), contains("salary"), contains("stock")) %>%
+    plot_ggpairs(Attrition)
+```
+-> 1c, 2d and 3b are correct
+
+```{r}
+#| message: false
+# Survey Results: Satisfaction level, WorkLifeBalance 
+employee_attrition_tbl %>%
+    select(Attrition, contains("satisfaction"), contains("life")) %>%
+    plot_ggpairs(Attrition)
+```
+-> 4a and 5d are correct
+
+```{r}
+#| message: false
+# Performance Data: Job Involvment, Performance Rating
+employee_attrition_tbl %>%
+    select(Attrition, contains("performance"), contains("involvement")) %>%
+    plot_ggpairs(Attrition)
+```
+-> 6d is correct
+
+```{r}
+#| message: false
+# Work-Life Features 
+employee_attrition_tbl %>%
+    select(Attrition, contains("overtime"), contains("travel")) %>%
+    plot_ggpairs(Attrition)
+```
+-> 7a is correct
+
+```{r}
+#| message: false
+# Training and Education 
+employee_attrition_tbl %>%
+    select(Attrition, contains("training"), contains("education")) %>%
+    plot_ggpairs(Attrition)
+```
+-> 8c is correct
+
+```{r}
+#| message: false
+# Time-Based Features: Years at company, years in current role
+employee_attrition_tbl %>%
+    select(Attrition, contains("years")) %>%
+    plot_ggpairs(Attrition)
+```
+9b and 10b are correct
+
+
+# Second part
+
+```{r}
+#| message: false
+# Load data
+product_backorders_tbl <- read_csv("Data/product_backorders.csv")
+
+# Split into test and train
+set.seed(seed = 1113)
+split_obj <- rsample::initial_split(product_backorders_tbl, prop = 0.85)
+
+# Assign training and test data
+train_readable_tbl <- training(split_obj)
+test_readable_tbl  <- testing(split_obj)
+```
+
+```{r}
+# Recipe
+factor_names <- c("deck_risk", "oe_constraint", "ppap_risk", "stop_auto_buy", "rev_stop", "went_on_backorder")
+
+recipe_obj <- recipe(went_on_backorder ~ ., data = train_readable_tbl) %>%
+    step_zv(all_predictors()) %>%
+    step_mutate_at(all_of(factor_names), fn = as.factor) %>%
+    step_center(all_numeric()) %>%
+    step_scale(all_numeric()) %>%
+    step_dummy(all_nominal(), -all_outcomes()) %>% 
+    
+    # prepare the final recipe
+    prep()
+
+train_tbl <- bake(recipe_obj, new_data = train_readable_tbl)
+test_tbl  <- bake(recipe_obj, new_data = test_readable_tbl)
+```
+
+```{r}
+#| message: false
+# Modeling
+h2o.init()
+
+# Split data into a training and a validation data frame
+# Setting the seed is just for reproducability
+split_h2o <- h2o.splitFrame(as.h2o(train_tbl), ratios = c(0.85), seed = 1234)
+train_h2o <- split_h2o[[1]]
+valid_h2o <- split_h2o[[2]]
+test_h2o  <- as.h2o(test_tbl)
+
+# Set the target and predictors
+y <- "went_on_backorder"
+x <- setdiff(names(train_h2o), y)
+
+automl_models_h2o <- h2o.automl(
+  x = x,
+  y = y,
+  training_frame    = train_h2o,
+  validation_frame  = valid_h2o,
+  leaderboard_frame = test_h2o,
+  max_runtime_secs  = 30,
+  nfolds            = 5 
+)
+
+```
+
+```{r}
+# leaderboard
+automl_models_h2o@leaderboard
+```
+
+
+```{r}
+#| message: false
+# predictions
+predictions_tbl <- h2o.predict(automl_models_h2o@leader, newdata = as.h2o(test_tbl))  %>% as_tibble()
+predictions_tbl
+```
+
+```{r}
+# save
+automl_models_h2o@leader %>% h2o.saveModel(path = "h20_models/")
+```
